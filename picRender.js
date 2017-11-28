@@ -7,6 +7,9 @@ let imgInput = document.getElementById("js-img-input");
 // Html5 Image render location (div or section)
 let imgOutput = document.getElementById("js-img-output");
 
+// Designated upload button
+let imgUploadBtn = document.getElementById("js-img-upload-btn");
+
 //==================================================
 // Render Uploaded Images
 //==================================================
@@ -98,6 +101,54 @@ function clearImages () {
 }
 
 //==================================================
+// Upload Image Via Ajax
+//==================================================
+
+function uploadImages () {
+    imgUploadBtn.addEventListener("click", function(){
+        // Collect all the files uploaded to the html5
+        // file input element create a new form data objece
+        // add the url you want to use as well as what you 
+        // want to happen on success and failure
+        let files = imgInput.files,
+            imageData = new formData(),
+            url = "path/mypage.php",
+            success,
+            error;
+
+        if(files.length < 1) {
+            exit;
+        }
+        
+        for( let i = 0; i < files.length; i++) {
+            imageData.append("fileUp[]", files[i]);
+        }
+        // still need to figure promises out so as to 
+        // Not use Callback functions
+        sendImages(url, imageData, success, error);
+
+    });
+}
+
+//==================================================
+// Ajax Request
+//==================================================
+
+function sendImages (url, data, success, failure) {
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', url);
+    xhr.setRequestHeader("Content-Type", file.type);
+    xhr.send(data);
+    xhr.onload = funciton() {
+        if(xhr.status === 200) {
+            success();
+        } else {
+            error();
+        }
+    }
+}
+
+//==================================================
 // standalone Helper Functions
 //==================================================
 
@@ -117,5 +168,5 @@ function generateRandomId() {
 
 // Listen for Image file input change
 renderImages();
-
+uploadImages();
 
