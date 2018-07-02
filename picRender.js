@@ -16,6 +16,8 @@ let imgUploadBtn = document.getElementById("js-img-upload-btn");
 
 function renderImages () {
     imgInput.addEventListener("change", function(){
+
+        // Single files or multiple files are supported
         for (let i = 0; i < imgInput.files.length; i++) {
             let randomId = generateRandomId();
 
@@ -47,7 +49,7 @@ function renderImages () {
                     this.imgWrapper.setAttribute("id", this.fileId);
                     this.imgWrapper.setAttribute("class", "your-class");
 
-                    // Configure Individual Img Closs Button CSS
+                    // Configure Individual Img Close Button CSS
                     this.imgClose.setAttribute("class", "your-class");
 
                     // Create Completed Img Component and Append it to the Dom
@@ -62,7 +64,8 @@ function renderImages () {
 
             // The following is optional logic that can be 
             // applied to add aditional CSS to the Images 
-            // Depending on whether there is one or more images
+            // this can be useful if the end user is selecting
+            // more than one image to upload via the file input
 
             if(imgInput.files.length > 1) {
                 imgObj.imgElement.setAttribute("class", "single-img-class")
@@ -86,11 +89,11 @@ function clearImages () {
     let clearBtn = document.getElementById("js-clear-btn");
     clearBtn.addEventListener("click", function(){
 
-        // Remove each Image from the dom as well as from the
+        // Remove each Image from the dom
         for (let i = 0; i < imgObjGroup.length; i++) {
             let id    = imgObjGroup[i].fileId;
             let image = document.getElementById(id);
-            if(image != null) {
+            if(image !== null || image !== undefined) {
                 imgOutput.removeChild(image);
             }
         }
@@ -123,29 +126,30 @@ function uploadImages () {
         for( let i = 0; i < files.length; i++) {
             imageData.append("fileUp[]", files[i]);
         }
-        // still need to figure promises out so as to 
-        // Not use Callback functions
-        sendImages(url, imageData, success, error);
+        
+        // Use the fetch API to send selected images
+        // to your desired backend a custom solution
+        // Here is one solution
+
+        // backend url
+        const url = "your desired url for your backend";
+
+        // add additional data to formdata
+        // could be: 
+        // - actions
+        // - controllers
+        // - query strings
+        imageData.append('controller', "exampleController");
+
+        fetch(url, {
+            method: 'POST',
+            body: imageData,
+        })
+        .then(response => response.json())
+        .catch(error => console.error('error:', error))
+        .then(response => console.log('success:', response));
 
     });
-}
-
-//==================================================
-// Ajax Request
-//==================================================
-
-function sendImages (url, data, success, failure) {
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', url);
-    xhr.setRequestHeader("Content-Type", file.type);
-    xhr.send(data);
-    xhr.onload = funciton() {
-        if(xhr.status === 200) {
-            success();
-        } else {
-            error();
-        }
-    }
 }
 
 //==================================================
